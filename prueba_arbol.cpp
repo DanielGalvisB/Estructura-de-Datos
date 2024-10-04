@@ -1,7 +1,7 @@
 /************************************
- Nombres: JULIANA PACHECO, DANIEL GONZALES, NICOLAS ALGARA
+ Nombres: Daniel Galvis
  TEMA: TALLER ARBOLES
- FECHA: 22/09/2024
+ FECHA: 04/10/2024
  ***********************************/
 
 #include <iostream>
