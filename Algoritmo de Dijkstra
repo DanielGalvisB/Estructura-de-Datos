@@ -1,0 +1,67 @@
+#include <iostream>
+#include <vector>
+#include <climits>
+#include <queue>
+#include <utility>
+
+using namespace std;
+
+const int INF = INT_MAX;
+
+void dijkstra(int inicio, vector<vector<pair<int, int>>> &grafo) {
+    int n = grafo.size();
+    vector<int> dist(n, INF);
+    vector<int> previo(n, -1);
+    dist[inicio] = 0;
+
+    priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> pq;
+    pq.push({0, inicio});
+
+    while (!pq.empty()) {
+        int d = pq.top().first;
+        int u = pq.top().second;
+        pq.pop();
+
+        if (d > dist[u]) continue;
+
+        for (auto &vecino : grafo[u]) {
+            int v = vecino.first;
+            int peso = vecino.second;
+
+            if (dist[u] + peso < dist[v]) {
+                dist[v] = dist[u] + peso;
+                previo[v] = u;
+                pq.push({dist[v], v});
+            }
+        }
+    }
+
+    cout << "Vertice\tDistancia\tCamino" << endl;
+    for (int i = 0; i < n; ++i) {
+        cout << i << "\t" << dist[i] << "\t\t";
+        int nodo = i;
+        while (nodo != -1) {
+            cout << nodo << " ";
+            nodo = previo[nodo];
+        }
+        cout << endl;
+    }
+}
+
+int main() {
+    int n = 7;
+    vector<vector<pair<int, int>>> grafo(n);
+
+    // Definir las conexiones del grafo
+    grafo[0].push_back({1, 1});
+    grafo[0].push_back({2, 3});
+    grafo[1].push_back({3, 7});
+    grafo[2].push_back({3, 3});
+    grafo[2].push_back({4, 1});
+    grafo[3].push_back({5, 9});
+    grafo[4].push_back({5, 5});
+    grafo[5].push_back({6, 26});
+    dijkstra(0, grafo);
+
+    return 0;
+}
