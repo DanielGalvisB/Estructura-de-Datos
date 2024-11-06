@@ -1,55 +1,51 @@
 #include <iostream>
 #include <vector>
+#include <unordered_map>
 #include <stack>
 
 using namespace std;
 
-bool esCicloEuler(const vector<vector<int>>& grafo) {
-    for (const auto& vecinos : grafo) {
-        if (vecinos.size() % 2 != 0)
-            return false;
-    }
-    return true;
-}
+vector<int> findEulerianCycle(unordered_map<int, vector<int>>& graph) {
+    vector<int> cycle;
+    stack<int> st;
 
-void encontrarCicloEuler(int inicio, vector<vector<int>>& grafo) {
-    stack<int> pila;
-    vector<int> ciclo;
-    pila.push(inicio);
-
-    while (!pila.empty()) {
-        int u = pila.top();
-        if (!grafo[u].empty()) {
-            int v = grafo[u].back();
-            grafo[u].pop_back();
-            pila.push(v);
-        } else {
-            ciclo.push_back(u);
-            pila.pop();
+    int start = -1;
+    for (auto& [vertex, neighbors] : graph) {
+        if (neighbors.size() % 2 != 0) {
+            start = vertex;
+            break;
         }
     }
-
-    cout << "Ciclo de Euler: ";
-    for (int nodo : ciclo) {
-        cout << nodo << " ";
+    if (start == -1) {
+        start = graph.begin()->first;
+    }
+    st.push(start);
+    while (!st.empty()) {
+        int current = st.top();
+        if (graph[current].empty()) {
+            cycle.push_back(current);
+            st.pop();
+        } else {
+            int next = graph[current].back();
+            graph[current].pop_back();
+            st.push(next);
+        }
+    }
+    reverse(cycle.begin(), cycle.end());
+    return cycle;
+}
+int main() {
+    unordered_map<int, vector<int>> graph = {
+        {0, {1, 2}},
+        {1, {0, 2, 3}},
+        {2, {0, 1, 3}},
+        {3, {1, 2, 4}},
+        {4, {3}}
+    };
+    vector<int> eulerianCycle = findEulerianCycle(graph);
+    for (int vertex : eulerianCycle) {
+        cout << vertex << " ";
     }
     cout << endl;
-}
-
-int main() {
-    int n = 5;
-    vector<vector<int>> grafo(n);
-    grafo[0] = {1, 2};
-    grafo[1] = {0, 2, 3};
-    grafo[2] = {0, 1, 4};
-    grafo[3] = {1, 4};
-    grafo[4] = {2, 3};
-
-    if (esCicloEuler(grafo)) {
-        encontrarCicloEuler(0, grafo);
-    } else {
-        cout << "No existe un ciclo de Euler en el grafo." << endl;
-    }
-
     return 0;
 }
