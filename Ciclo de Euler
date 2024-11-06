@@ -1,0 +1,55 @@
+#include <iostream>
+#include <vector>
+#include <stack>
+
+using namespace std;
+
+bool esCicloEuler(const vector<vector<int>>& grafo) {
+    for (const auto& vecinos : grafo) {
+        if (vecinos.size() % 2 != 0)
+            return false;
+    }
+    return true;
+}
+
+void encontrarCicloEuler(int inicio, vector<vector<int>>& grafo) {
+    stack<int> pila;
+    vector<int> ciclo;
+    pila.push(inicio);
+
+    while (!pila.empty()) {
+        int u = pila.top();
+        if (!grafo[u].empty()) {
+            int v = grafo[u].back();
+            grafo[u].pop_back();
+            pila.push(v);
+        } else {
+            ciclo.push_back(u);
+            pila.pop();
+        }
+    }
+
+    cout << "Ciclo de Euler: ";
+    for (int nodo : ciclo) {
+        cout << nodo << " ";
+    }
+    cout << endl;
+}
+
+int main() {
+    int n = 5;
+    vector<vector<int>> grafo(n);
+    grafo[0] = {1, 2};
+    grafo[1] = {0, 2, 3};
+    grafo[2] = {0, 1, 4};
+    grafo[3] = {1, 4};
+    grafo[4] = {2, 3};
+
+    if (esCicloEuler(grafo)) {
+        encontrarCicloEuler(0, grafo);
+    } else {
+        cout << "No existe un ciclo de Euler en el grafo." << endl;
+    }
+
+    return 0;
+}
